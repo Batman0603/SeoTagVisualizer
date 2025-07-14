@@ -19,6 +19,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize animations
     initializeAnimations();
     
+    // Initialize score circle animation
+    initializeScoreCircle();
+    
     // Initialize tooltips if Bootstrap tooltips are available
     if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -467,6 +470,28 @@ window.addEventListener('scroll', function() {
         }
     }
 });
+
+/**
+ * Initialize circular score animation
+ */
+function initializeScoreCircle() {
+    const scoreCircle = document.querySelector('.score-circle');
+    if (scoreCircle) {
+        const score = parseInt(scoreCircle.getAttribute('data-score'));
+        const circle = scoreCircle.querySelector('.score-foreground');
+        
+        if (circle && !isNaN(score)) {
+            // Calculate the stroke-dashoffset based on score
+            const circumference = 314; // 2 * π * r (r = 50)
+            const offset = circumference - (circumference * score / 100);
+            
+            // Animate the circle
+            setTimeout(() => {
+                circle.style.strokeDashoffset = offset;
+            }, 500); // Delay for better visual effect
+        }
+    }
+}
 
 // Add performance optimization for smooth animations
 document.addEventListener('DOMContentLoaded', function() {

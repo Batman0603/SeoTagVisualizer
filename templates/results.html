@@ -38,26 +38,38 @@
             </a>
         </div>
 
-        <!-- URL Info -->
+        <!-- URL Info with Circular Score -->
         <div class="card mb-4">
             <div class="card-body">
-                <h6 class="card-title">
-                    <i class="fas fa-link me-2"></i>Analyzed URL
-                </h6>
-                <p class="mb-2 font-monospace">{{ url }}</p>
-                <div class="d-flex align-items-center">
-                    <span class="badge bg-{% if results.validation.overall_score >= 80 %}success{% elif results.validation.overall_score >= 60 %}warning{% else %}danger{% endif %} me-2">
-                        SEO Score: {{ results.validation.overall_score }}/100
-                    </span>
-                    <small class="text-muted">
-                        {% if results.validation.overall_score >= 80 %}
-                            Excellent SEO optimization
-                        {% elif results.validation.overall_score >= 60 %}
-                            Good SEO with room for improvement
-                        {% else %}
-                            Needs significant SEO improvements
-                        {% endif %}
-                    </small>
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h6 class="card-title">
+                            <i class="fas fa-link me-2"></i>Analyzed URL
+                        </h6>
+                        <p class="mb-2 font-monospace">{{ url }}</p>
+                        <small class="text-muted">
+                            {% if results.validation.overall_score >= 80 %}
+                                Excellent SEO optimization
+                            {% elif results.validation.overall_score >= 60 %}
+                                Good SEO with room for improvement
+                            {% else %}
+                                Needs significant SEO improvements
+                            {% endif %}
+                        </small>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div class="score-circle score-{% if results.validation.overall_score >= 80 %}excellent{% elif results.validation.overall_score >= 60 %}good{% else %}poor{% endif %}" data-score="{{ results.validation.overall_score }}">
+                            <div class="score-circle-inner">
+                                <div class="score-number">{{ results.validation.overall_score }}</div>
+                                <div class="score-label">SEO Score</div>
+                            </div>
+                            <svg class="score-progress" width="120" height="120">
+                                <circle cx="60" cy="60" r="50" class="score-background"></circle>
+                                <circle cx="60" cy="60" r="50" class="score-foreground" 
+                                        style="stroke-dashoffset: {{ 314 - (314 * results.validation.overall_score / 100) }}"></circle>
+                            </svg>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

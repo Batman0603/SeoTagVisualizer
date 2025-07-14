@@ -97,12 +97,14 @@ body {
     background-color: var(--bg-secondary);
     border-color: var(--border-color);
     color: var(--text-body);
+    padding: 0.75rem 1rem;
 }
 
 .form-control {
     background-color: var(--bg-body);
     border-color: var(--border-color);
     color: var(--text-body);
+    padding: 0.75rem 1rem;
 }
 
 .form-control:focus {
@@ -110,6 +112,10 @@ body {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
     color: var(--text-body);
+}
+
+.form-control.ps-3 {
+    padding-left: 1rem !important;
 }
 
 /* Feature Cards */
@@ -735,4 +741,126 @@ footer .text-muted {
 @keyframes slideUp {
     from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* Circular Score Component */
+.score-circle {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    display: inline-block;
+}
+
+.score-circle-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 2;
+}
+
+.score-number {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: var(--text-body);
+    line-height: 1;
+}
+
+.score-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 0.25rem;
+}
+
+.score-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: rotate(-90deg);
+    z-index: 1;
+}
+
+.score-background {
+    fill: none;
+    stroke: var(--bg-tertiary);
+    stroke-width: 8;
+}
+
+.score-foreground {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 314;
+    stroke-dashoffset: 314;
+    transition: stroke-dashoffset 2s ease-in-out, stroke 0.3s ease;
+}
+
+/* Score color variations */
+.score-excellent .score-foreground {
+    stroke: var(--success-color);
+}
+
+.score-excellent .score-number {
+    color: var(--success-color);
+}
+
+.score-good .score-foreground {
+    stroke: var(--warning-color);
+}
+
+.score-good .score-number {
+    color: var(--warning-color);
+}
+
+.score-poor .score-foreground {
+    stroke: var(--danger-color);
+}
+
+.score-poor .score-number {
+    color: var(--danger-color);
+}
+
+/* Score animation */
+.score-circle.animate .score-foreground {
+    animation: scoreProgress 2s ease-in-out forwards;
+}
+
+@keyframes scoreProgress {
+    from {
+        stroke-dashoffset: 314;
+    }
+    to {
+        stroke-dashoffset: var(--final-offset);
+    }
+}
+
+/* Responsive score circle */
+@media (max-width: 768px) {
+    .score-circle {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .score-progress {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .score-progress circle {
+        r: 42px;
+        cx: 50px;
+        cy: 50px;
+    }
+    
+    .score-number {
+        font-size: 1.5rem;
+    }
+    
+    .score-label {
+        font-size: 0.7rem;
+    }
 }
