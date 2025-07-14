@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Analysis Results - {{ results.meta_data.title or 'Untitled Page' }}</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">
+                <i class="fas fa-chart-line me-2"></i>SEO Analysis Results
+            </h1>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i>Analyze Another URL
+            </a>
+        </div>
+
+        <!-- URL Info -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="fas fa-link me-2"></i>Analyzed URL
+                </h6>
+                <p class="mb-2 font-monospace">{{ url }}</p>
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-{% if results.validation.overall_score >= 80 %}success{% elif results.validation.overall_score >= 60 %}warning{% else %}danger{% endif %} me-2">
+                        SEO Score: {{ results.validation.overall_score }}/100
+                    </span>
+                    <small class="text-muted">
+                        {% if results.validation.overall_score >= 80 %}
+                            Excellent SEO optimization
+                        {% elif results.validation.overall_score >= 60 %}
+                            Good SEO with room for improvement
+                        {% else %}
+                            Needs significant SEO improvements
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Validation Results -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h4 class="mb-3">
+                    <i class="fas fa-check-double me-2"></i>SEO Validation
+                </h4>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <!-- Title Validation -->
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-heading me-2"></i>
+                        <strong>Title Tag</strong>
+                        <span class="badge bg-{% if results.validation.title.status == 'success' %}success{% elif results.validation.title.status == 'warning' %}warning{% else %}danger{% endif %} ms-auto">
+                            {{ results.validation.title.status.title() }}
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        {% if results.meta_data.title %}
+                            <p class="mb-2"><strong>Current:</strong> {{ results.meta_data.title }}</p>
+                            <p class="mb-2 text-muted">Length: {{ results.meta_data.title|length }} characters</p>
+                        {% endif %}
+                        <ul class="list-unstyled mb-0">
+                            {% for message in results.validation.title.messages %}
+                                <li class="mb-1">
+                                    <i class="fas fa-{% if results.validation.title.status == 'success' %}check{% elif results.validation.title.status == 'warning' %}exclamation-triangle{% else %}times{% endif %} me-2"></i>
+                                    {{ message }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description Validation -->
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-file-alt me-2"></i>
+                        <strong>Meta Description</strong>
+                        <span class="badge bg-{% if results.validation.description.status == 'success' %}success{% elif results.validation.description.status == 'warning' %}warning{% else %}danger{% endif %} ms-auto">
+                            {{ results.validation.description.status.title() }}
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        {% if results.meta_data.description %}
+                            <p class="mb-2"><strong>Current:</strong> {{ results.meta_data.description }}</p>
+                            <p class="mb-2 text-muted">Length: {{ results.meta_data.description|length }} characters</p>
+                        {% endif %}
+                        <ul class="list-unstyled mb-0">
+                            {% for message in results.validation.description.messages %}
+                                <li class="mb-1">
+                                    <i class="fas fa-{% if results.validation.description.status == 'success' %}check{% elif results.validation.description.status == 'warning' %}exclamation-triangle{% else %}times{% endif %} me-2"></i>
+                                    {{ message }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Open Graph Validation -->
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fab fa-facebook me-2"></i>
+                        <strong>Open Graph Tags</strong>
+                        <span class="badge bg-{% if results.validation.og_tags.status == 'success' %}success{% elif results.validation.og_tags.status == 'warning' %}warning{% else %}danger{% endif %} ms-auto">
+                            {{ results.validation.og_tags.status.title() }}
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            {% for message in results.validation.og_tags.messages %}
+                                <li class="mb-1">
+                                    <i class="fas fa-{% if results.validation.og_tags.status == 'success' %}check{% elif results.validation.og_tags.status == 'warning' %}exclamation-triangle{% else %}times{% endif %} me-2"></i>
+                                    {{ message }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Twitter Card Validation -->
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fab fa-twitter me-2"></i>
+                        <strong>Twitter Cards</strong>
+                        <span class="badge bg-{% if results.validation.twitter_tags.status == 'success' %}success{% elif results.validation.twitter_tags.status == 'warning' %}warning{% else %}danger{% endif %} ms-auto">
+                            {{ results.validation.twitter_tags.status.title() }}
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            {% for message in results.validation.twitter_tags.messages %}
+                                <li class="mb-1">
+                                    <i class="fas fa-{% if results.validation.twitter_tags.status == 'success' %}check{% elif results.validation.twitter_tags.status == 'warning' %}exclamation-triangle{% else %}times{% endif %} me-2"></i>
+                                    {{ message }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical SEO -->
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-cogs me-2"></i>
+                        <strong>Technical SEO</strong>
+                        <span class="badge bg-{% if results.validation.technical.status == 'success' %}success{% elif results.validation.technical.status == 'warning' %}warning{% else %}danger{% endif %} ms-auto">
+                            {{ results.validation.technical.status.title() }}
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            {% for message in results.validation.technical.messages %}
+                                <li class="mb-1">
+                                    <i class="fas fa-{% if results.validation.technical.status == 'success' %}check{% elif results.validation.technical.status == 'warning' %}exclamation-triangle{% else %}times{% endif %} me-2"></i>
+                                    {{ message }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Structure -->
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="fas fa-sitemap me-2"></i>
+                        <strong>Content Structure</strong>
+                        <span class="badge bg-{% if results.validation.content.status == 'success' %}success{% elif results.validation.content.status == 'warning' %}warning{% else %}danger{% endif %} ms-auto">
+                            {{ results.validation.content.status.title() }}
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            {% for message in results.validation.content.messages %}
+                                <li class="mb-1">
+                                    <i class="fas fa-{% if results.validation.content.status == 'success' %}check{% elif results.validation.content.status == 'warning' %}exclamation-triangle{% else %}times{% endif %} me-2"></i>
+                                    {{ message }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Platform Previews -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h4 class="mb-3">
+                    <i class="fas fa-eye me-2"></i>Platform Previews
+                </h4>
+            </div>
+        </div>
+
+        <!-- Google Search Preview -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fab fa-google me-2"></i>Google Search Results
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="google-preview">
+                            <div class="google-url">{{ results.previews.google.url }}</div>
+                            <div class="google-title">{{ results.previews.google.title }}</div>
+                            <div class="google-description">{{ results.previews.google.description }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Social Media Previews -->
+        <div class="row">
+            <!-- Facebook Preview -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fab fa-facebook me-2"></i>Facebook
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="social-preview facebook-preview">
+                            {% if results.previews.facebook.image %}
+                                <div class="social-image">
+                                    <img src="{{ results.previews.facebook.image }}" alt="Preview image" class="img-fluid">
+                                </div>
+                            {% endif %}
+                            <div class="social-content">
+                                <div class="social-site">{{ results.previews.facebook.site_name }}</div>
+                                <div class="social-title">{{ results.previews.facebook.title }}</div>
+                                <div class="social-description">{{ results.previews.facebook.description }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Twitter Preview -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fab fa-twitter me-2"></i>Twitter/X
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="social-preview twitter-preview">
+                            {% if results.previews.twitter.image %}
+                                <div class="social-image">
+                                    <img src="{{ results.previews.twitter.image }}" alt="Preview image" class="img-fluid">
+                                </div>
+                            {% endif %}
+                            <div class="social-content">
+                                <div class="social-title">{{ results.previews.twitter.title }}</div>
+                                <div class="social-description">{{ results.previews.twitter.description }}</div>
+                                <div class="social-site">{{ results.previews.twitter.site }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LinkedIn Preview -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fab fa-linkedin me-2"></i>LinkedIn
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="social-preview linkedin-preview">
+                            {% if results.previews.linkedin.image %}
+                                <div class="social-image">
+                                    <img src="{{ results.previews.linkedin.image }}" alt="Preview image" class="img-fluid">
+                                </div>
+                            {% endif %}
+                            <div class="social-content">
+                                <div class="social-title">{{ results.previews.linkedin.title }}</div>
+                                <div class="social-description">{{ results.previews.linkedin.description }}</div>
+                                <div class="social-site">{{ results.previews.linkedin.site_name }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Meta Tags Data -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fas fa-code me-2"></i>Raw Meta Tags Data
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="accordion" id="metaDataAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMetaData" aria-expanded="false" aria-controls="collapseMetaData">
+                                        View All Extracted Meta Tags
+                                    </button>
+                                </h2>
+                                <div id="collapseMetaData" class="accordion-collapse collapse" data-bs-parent="#metaDataAccordion">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6>Basic Meta Tags</h6>
+                                                <table class="table table-sm">
+                                                    <tbody>
+                                                        <tr><td><strong>Title:</strong></td><td>{{ results.meta_data.title or 'Not found' }}</td></tr>
+                                                        <tr><td><strong>Description:</strong></td><td>{{ results.meta_data.description or 'Not found' }}</td></tr>
+                                                        <tr><td><strong>Keywords:</strong></td><td>{{ results.meta_data.keywords or 'Not found' }}</td></tr>
+                                                        <tr><td><strong>Canonical:</strong></td><td>{{ results.meta_data.canonical or 'Not found' }}</td></tr>
+                                                        <tr><td><strong>Robots:</strong></td><td>{{ results.meta_data.robots or 'Not found' }}</td></tr>
+                                                        <tr><td><strong>Viewport:</strong></td><td>{{ results.meta_data.viewport or 'Not found' }}</td></tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6>Open Graph Tags</h6>
+                                                <table class="table table-sm">
+                                                    <tbody>
+                                                        <tr><td><strong>og:title:</strong></td><td>{{ results.meta_data.og_title or 'Not found' }}</td></tr>
+                                                        <tr><td><strong>og:description:</strong></td><td>{{ results.meta_data.og_description or 'Not found' }}</td></tr>
+                                                        <tr><td><strong>og:image:</strong></td><td>{{ results.meta_data.og_image or 'Not found' }}</td></tr>
+                                                        <tr><td><strong>og:url:</strong></td><td>{{ results.meta_data.og_url or 'Not found' }}</td></tr>
+                                                        <tr><td><strong>og:type:</strong></td><td>{{ results.meta_data.og_type or 'Not found' }}</td></tr>
+                                                        <tr><td><strong>og:site_name:</strong></td><td>{{ results.meta_data.og_site_name or 'Not found' }}</td></tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-md-6">
+                                                <h6>Twitter Card Tags</h6>
+                                                <table class="table table-sm">
+                                                    <tbody>
+                                                        <tr><td><strong>twitter:card:</strong></td><td>{{ results.meta_data.twitter_card or 'Not found' }}</td></tr>
+                                                        <tr><td><strong>twitter:title:</strong></td><td>{{ results.meta_data.twitter_title or 'Not found' }}</td></tr>
+                                                        <tr><td><strong>twitter:description:</strong></td><td>{{ results.meta_data.twitter_description or 'Not found' }}</td></tr>
+                                                        <tr><td><strong>twitter:image:</strong></td><td>{{ results.meta_data.twitter_image or 'Not found' }}</td></tr>
+                                                        <tr><td><strong>twitter:site:</strong></td><td>{{ results.meta_data.twitter_site or 'Not found' }}</td></tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6>Content Structure</h6>
+                                                <table class="table table-sm">
+                                                    <tbody>
+                                                        <tr><td><strong>H1 Tags:</strong></td><td>{{ results.meta_data.h1_tags|length }}</td></tr>
+                                                        <tr><td><strong>H2 Tags:</strong></td><td>{{ results.meta_data.h2_tags|length }}</td></tr>
+                                                        <tr><td><strong>Total Images:</strong></td><td>{{ results.meta_data.total_images }}</td></tr>
+                                                        <tr><td><strong>Images w/o Alt:</strong></td><td>{{ results.meta_data.image_alt_missing }}</td></tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-5 py-4 border-top">
+        <div class="container text-center">
+            <p class="mb-0 text-muted">
+                <i class="fas fa-code me-2"></i>SEO Meta Tag Analyzer
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
