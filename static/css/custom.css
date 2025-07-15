@@ -838,6 +838,31 @@ footer .text-muted {
     }
 }
 
+/* Mini Score Display for Tables */
+.score-mini {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-align: center;
+    min-width: 40px;
+    color: white;
+}
+
+.score-mini.score-excellent {
+    background-color: var(--success-color);
+}
+
+.score-mini.score-good {
+    background-color: var(--warning-color);
+    color: var(--dark-color);
+}
+
+.score-mini.score-poor {
+    background-color: var(--danger-color);
+}
+
 /* Responsive score circle */
 @media (max-width: 768px) {
     .score-circle {
@@ -862,5 +887,11 @@ footer .text-muted {
     
     .score-label {
         font-size: 0.7rem;
+    }
+    
+    .score-mini {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.4rem;
+        min-width: 35px;
     }
 }

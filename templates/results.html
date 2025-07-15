@@ -16,6 +16,12 @@
                 <i class="fas fa-search-plus me-2"></i>SEO Analyzer
             </a>
             <div class="navbar-nav ms-auto">
+                <a class="nav-link text-light me-3" href="{{ url_for('history') }}">
+                    <i class="fas fa-history me-1"></i>History
+                </a>
+                <a class="nav-link text-light me-3" href="{{ url_for('stats') }}">
+                    <i class="fas fa-chart-bar me-1"></i>Stats
+                </a>
                 <button class="btn btn-outline-light btn-sm" id="theme-toggle" type="button">
                     <i class="fas fa-sun" id="theme-icon"></i>
                     <span id="theme-text" class="d-none d-sm-inline ms-1">Light Mode</span>
